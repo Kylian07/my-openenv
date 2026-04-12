@@ -12,11 +12,11 @@ Endpoints:
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import (
+from openenv_dc.models import (
     StepResult, ResetRequest, StepRequest, StateResponse
 )
-from environment import DataCleaningEnv
-from tasks import list_tasks
+from openenv_dc.environment import DataCleaningEnv
+from openenv_dc.tasks import list_tasks
 
 # ── Create the FastAPI app ────────────────────────────────
 app = FastAPI(
@@ -102,9 +102,13 @@ def state():
     return env.state()
 
 
-# ── Run the server ────────────────────────────────────────
-if __name__ == "__main__":
+def main():
+    """Main entry point for the server script."""
     import uvicorn
     print("Starting Data Cleaning OpenEnv server...")
     print("Docs available at: http://localhost:7860/docs")
     uvicorn.run(app, host="0.0.0.0", port=7860)
+
+
+if __name__ == "__main__":
+    main()

@@ -22,6 +22,10 @@ import json
 import yaml       # pip install pyyaml
 import requests
 
+# ── Force UTF-8 output on Windows (fixes → / emoji printing) ──
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 ENV_URL = os.environ.get("ENV_URL", "http://localhost:7860")
 
 PASS = "[PASS]"
@@ -31,13 +35,23 @@ WARN = "[WARN]"
 results: list[tuple[str, str, str]] = []   # (check_name, status, detail)
 
 
+def _safe(text: str) -> str:
+    """Replace characters that the console codec can't handle."""
+    return text.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(sys.stdout.encoding or "utf-8")
+
+
 def check(name: str, passed: bool, detail: str = "") -> None:
     status = PASS if passed else FAIL
     results.append((name, status, detail))
     icon = "[PASS]" if passed else "[FAIL]"
-    print(f"  {icon}  {name}", flush=True)
-    if detail:
-        print(f"         {detail}", flush=True)
+    try:
+        print(f"  {icon}  {name}", flush=True)
+        if detail:
+            print(f"         {detail}", flush=True)
+    except UnicodeEncodeError:
+        print(f"  {icon}  {_safe(name)}", flush=True)
+        if detail:
+            print(f"         {_safe(detail)}", flush=True)
 
 
 def warn(name: str, detail: str = "") -> None:

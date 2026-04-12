@@ -10,12 +10,12 @@ This is where all the logic lives:
 import copy
 from typing import Optional, List, Set
 
-from models import (
+from .models import (
     Action, ActionType, DataRow, Observation, Reward,
     StepResult, StateResponse
 )
-from tasks import get_task, FORMATTING_RULES
-from graders import grade
+from .tasks import get_task, FORMATTING_RULES
+from .graders import grade
 
 
 class DataCleaningEnv:

@@ -1,26 +1,30 @@
 FROM python:3.11-slim
 
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Set working directory inside container
 WORKDIR /app
 
-# Copy and install dependencies first (for Docker cache efficiency)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
 
-# Copy source files from src/ subdirectory into /app
-COPY src/models.py .
-COPY src/tasks.py .
-COPY src/graders.py .
-COPY src/environment.py .
-COPY src/main.py .
+# Copy project configuration first for caching
+COPY pyproject.toml uv.lock ./
 
-# Copy root-level files
-COPY inference.py .
-COPY openenv.yaml .
-COPY README.md .
+# Install dependencies
+RUN uv sync --frozen --no-dev
 
-# Expose port 7860 (required by Hugging Face Spaces)
+# Copy application code
+COPY server/ ./server/
+COPY src/ ./src/
+COPY openenv.yaml README.md ./
+
+# Expose port (required by HF Spaces)
 EXPOSE 7860
 
-# Start the FastAPI server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Ensure the app is in the path
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Use the entry point defined in pyproject.toml
+CMD ["server"]
