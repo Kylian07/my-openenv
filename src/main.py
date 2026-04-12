@@ -26,6 +26,7 @@ app = FastAPI(
         "on real-world tabular data cleaning tasks."
     ),
     version="1.0.0",
+    redirect_slashes=False,   # ← prevents POST→GET method switch on redirect
 )
 
 # Allow requests from anywhere (needed for HF Spaces)
@@ -65,6 +66,7 @@ def get_tasks():
 
 
 @app.post("/reset", response_model=StepResult)
+@app.post("/reset/", response_model=StepResult, include_in_schema=False)
 def reset(req: ResetRequest):
     """
     Reset the environment and start a new episode.
@@ -79,6 +81,7 @@ def reset(req: ResetRequest):
 
 
 @app.post("/step", response_model=StepResult)
+@app.post("/step/", response_model=StepResult, include_in_schema=False)
 def step(req: StepRequest):
     """
     Take one action in the environment.
