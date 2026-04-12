@@ -1,0 +1,85 @@
+name: data-cleaning-env
+description: >
+  A real-world data cleaning environment where AI agents must fix formatting,
+  remove duplicates, fill missing values, detect outliers, and validate
+  cross-field constraints in tabular datasets.
+version: "1.0.0"
+author: "CodeFuse"
+tags:
+  - openenv
+  - data-cleaning
+  - real-world
+  - tabular-data
+
+interface:
+  observation_model: models.Observation
+  action_model: models.Action
+  reward_model: models.Reward
+
+endpoints:
+  reset: /reset
+  step: /step
+  state: /state
+
+tasks:
+  - id: easy_format_standardization
+    description: >
+      Standardize formats (names, emails, phones, dates, cities) in a
+      5-row contact dataset. No deletions or missing values.
+    difficulty: easy
+    max_steps: 35
+
+  - id: medium_dedup_and_fill
+    description: >
+      Fix formats, remove 2 duplicate rows, and fill 2 missing values
+      in a 10-row employee dataset. Requires contextual inference.
+    difficulty: medium
+    max_steps: 60
+
+  - id: hard_full_pipeline
+    description: >
+      Complete data quality pipeline on a 15-row HR dataset: formatting,
+      deduplication, missing value imputation, outlier correction,
+      cross-field validation, and status normalization.
+    difficulty: hard
+    max_steps: 100
+
+action_space:
+  type: structured
+  actions:
+    - name: fix_cell
+      description: Change the value of a specific cell
+      params: [row_index, column_name, new_value]
+    - name: delete_row
+      description: Remove a row (for duplicates or invalid entries)
+      params: [row_index]
+    - name: submit
+      description: Submit the cleaned dataset for final grading
+      params: []
+
+observation_space:
+  type: structured
+  fields:
+    - name: dataset
+      type: list[DataRow]
+      description: Current state of all rows in the dataset
+    - name: task_description
+      type: string
+      description: Human-readable task instructions
+    - name: rules
+      type: string
+      description: Formatting rules to follow
+    - name: columns
+      type: list[string]
+      description: Column names in the dataset
+    - name: current_score
+      type: float
+      description: Current grading score (0.0-1.0)
+
+reward:
+  type: continuous
+  range: [0.0, 1.0]
+  description: >
+    Score based on cell-level accuracy against ground truth.
+    Provides per-step delta signals for reward shaping.
+    Penalizes invalid actions with -0.01 delta.
