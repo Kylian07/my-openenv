@@ -116,11 +116,11 @@ def grade(task_def: dict,
     breakdown = {
         "total_checks": total_checks,
         "correct_checks": correct_checks,
-        "deletion_accuracy": (
+        "deletion_accuracy": 0.05 + (0.90 * (
             delete_correct / max(delete_checks, 1)
             if delete_checks else 1.0
-        ),
-        "cell_accuracy": raw_score,  # Keep the raw accuracy for logging
+        )),
+        "cell_accuracy": 0.05 + (0.90 * raw_score),
     }
 
     return {
