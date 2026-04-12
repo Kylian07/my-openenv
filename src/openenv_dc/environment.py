@@ -37,7 +37,7 @@ class DataCleaningEnv:
         self._max_steps: int = 0
         self._done: bool = True
         self._history: List[str] = []            # Action log
-        self._prev_score: float = 0.0
+        self._prev_score: float = 0.5            # Start in-between to satisfy (0,1) range
 
     # ══════════════════════════════════════════════════════════
     #  reset() — Start a new episode
@@ -73,7 +73,7 @@ class DataCleaningEnv:
         obs = self._make_observation()
         reward = Reward(
             score=self._prev_score,
-            delta=0.0,
+            delta=0.0001,  # Near-zero but strictly > 0
             message="Environment reset. Begin cleaning the dataset."
         )
 
@@ -104,7 +104,7 @@ class DataCleaningEnv:
                 observation=obs,
                 reward=Reward(
                     score=self._prev_score,
-                    delta=0.0,
+                    delta=0.0001,
                     message="Episode already done. Call reset() to start a new one."
                 ),
                 done=True,
@@ -260,7 +260,7 @@ class DataCleaningEnv:
     def _compute_score(self) -> float:
         """Calculate current score by grading against ground truth."""
         if not self._task_def:
-            return 0.0
+            return 0.5  # Neutral score if no task loaded
         result = grade(self._task_def, self._dataset, self._deleted)
         return result["score"]
 
