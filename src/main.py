@@ -26,7 +26,6 @@ app = FastAPI(
         "on real-world tabular data cleaning tasks."
     ),
     version="1.0.0",
-    redirect_slashes=False,   # ← prevents POST→GET method switch on redirect
 )
 
 # Allow requests from anywhere (needed for HF Spaces)
@@ -66,25 +65,12 @@ def get_tasks():
     return {"tasks": list_tasks()}
 
 
-@app.get("/reset", include_in_schema=False)
-@app.get("/reset/", include_in_schema=False)
-def reset_get():
-    """Catch-all for GET requests to /reset to help debugging."""
-    raise HTTPException(
-        status_code=405, 
-        detail="Method Not Allowed. Use POST instead of GET for /reset. "
-               "If you are seeing this in a browser, that is expected as browsers use GET. "
-               "If you are seeing this from a script, check for redirects or incorrect URL construction."
-    )
-
-
+@app.get("/reset", response_model=StepResult)
 @app.post("/reset", response_model=StepResult)
-@app.post("/reset/", response_model=StepResult, include_in_schema=False)
 def reset(req: ResetRequest = ResetRequest()):
     """
     Reset the environment and start a new episode.
-    
-    Body: {"task_id": "easy_format_standardization"}
+    Handles both GET (default task) and POST (custom task_id).
     """
     try:
         result = env.reset(task_id=req.task_id)
@@ -93,18 +79,13 @@ def reset(req: ResetRequest = ResetRequest()):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.get("/step", include_in_schema=False)
-@app.get("/step/", include_in_schema=False)
-def step_get():
-    """Catch-all for GET requests to /step to help debugging."""
-    raise HTTPException(
-        status_code=405, 
-        detail="Method Not Allowed. Use POST instead of GET for /step."
-    )
+@app.get("/step")
+def step_status():
+    """Health check for the step endpoint."""
+    return {"status": "ready", "method_required": "POST"}
 
 
 @app.post("/step", response_model=StepResult)
-@app.post("/step/", response_model=StepResult, include_in_schema=False)
 def step(req: StepRequest):
     """
     Take one action in the environment.
