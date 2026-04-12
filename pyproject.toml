@@ -21,6 +21,10 @@ dependencies = [
 [project.scripts]
 server = "server.app:main"
 
+[tool.setuptools.package-dir]
+"" = "src"
+"server" = "server"
+
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src", "server"]
 include = ["*"]
