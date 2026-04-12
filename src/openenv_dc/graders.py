@@ -105,7 +105,13 @@ def grade(task_def: dict,
         clean_idx += 1
 
     # ── Calculate final score ─────────────────────────────
-    score = correct_checks / max(total_checks, 1)
+    # Standard formula: correct / total
+    raw_score = correct_checks / max(total_checks, 1)
+
+    # Hackathon Rule: Scores must be STRICTLY between 0 and 1 (non-inclusive).
+    # We map [0, 1] to [0.05, 0.95] to be safe and ensure there's always
+    # some credit given even for dirty data, and room for improvement.
+    clamped_score = 0.05 + (raw_score * 0.90)
 
     breakdown = {
         "total_checks": total_checks,
@@ -114,11 +120,11 @@ def grade(task_def: dict,
             delete_correct / max(delete_checks, 1)
             if delete_checks else 1.0
         ),
-        "cell_accuracy": score,
+        "cell_accuracy": raw_score,  # Keep the raw accuracy for logging
     }
 
     return {
-        "score": round(score, 4),
+        "score": round(clamped_score, 4),
         "breakdown": breakdown,
         "details": details,
     }
