@@ -21,10 +21,9 @@ dependencies = [
 [project.scripts]
 server = "server.app:main"
 
-[tool.setuptools.package-dir]
-"" = "src"
-"server" = "server"
+[tool.setuptools]
+packages = ["openenv_dc", "server"]
 
-[tool.setuptools.packages.find]
-where = ["src", "server"]
-include = ["*"]
+[tool.setuptools.package-dir]
+"openenv_dc" = "src/openenv_dc"
+"server" = "server"
