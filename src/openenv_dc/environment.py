@@ -73,7 +73,7 @@ class DataCleaningEnv:
         obs = self._make_observation()
         reward = Reward(
             score=self._prev_score,
-            delta=0.0001,  # Near-zero but strictly > 0
+            delta=0.001,  # Conservative positive delta
             message="Environment reset. Begin cleaning the dataset."
         )
 
