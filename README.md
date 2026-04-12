@@ -4,7 +4,9 @@ An OpenEnv-compliant environment where AI agents must clean messy tabular datase
 fixing formatting, removing duplicates, filling missing values, and detecting outliers.
 
 **HF Space:** https://huggingface.co/spaces/Kylian07/my-env
+
 **Live API:** https://kylian07-my-env.hf.space
+
 **API Docs:** https://kylian07-my-env.hf.space/docs
 
 ---
