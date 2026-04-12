@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "data-cleaning-openenv"
+version = "1.0.0"
+description = "An OpenEnv environment for training AI agents on real-world tabular data cleaning tasks."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn==0.30.0",
+    "pydantic>=2.9.0",
+    "openai>=1.0.0",
+    "requests>=2.31.0",
+    "pyyaml>=6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
