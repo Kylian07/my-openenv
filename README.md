@@ -3,9 +3,9 @@
 An OpenEnv-compliant environment where AI agents must clean messy tabular datasets:
 fixing formatting, removing duplicates, filling missing values, and detecting outliers.
 
-**HF Space:** https://huggingface.co/spaces/Kylian07/Meta_env_rl  
-**Live API:** https://kylian07-meta-env-rl.hf.space  
-**API Docs:** https://kylian07-meta-env-rl.hf.space/docs
+**HF Space:** https://huggingface.co/spaces/Kylian07/my-env
+**Live API:** https://kylian07-my-env.hf.space
+**API Docs:** https://kylian07-my-env.hf.space/docs
 
 ---
 
@@ -69,7 +69,7 @@ python validate.py
 
 Against the live HF Space:
 ```bash
-set ENV_URL=https://kylian07-meta-env-rl.hf.space
+set ENV_URL=https://kylian07-my-env.hf.space
 python validate.py
 ```
 
