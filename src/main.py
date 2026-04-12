@@ -67,7 +67,7 @@ def get_tasks():
 
 @app.post("/reset", response_model=StepResult)
 @app.post("/reset/", response_model=StepResult, include_in_schema=False)
-def reset(req: ResetRequest):
+def reset(req: ResetRequest = ResetRequest()):
     """
     Reset the environment and start a new episode.
     
