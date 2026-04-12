@@ -9,16 +9,16 @@ WORKDIR /app
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
 
-# Copy project configuration first for caching
-COPY pyproject.toml uv.lock ./
-
-# Install dependencies
-RUN uv sync --frozen --no-dev
-
-# Copy application code
+# Copy project configuration and skeleton for metadata validation
+COPY pyproject.toml uv.lock README.md ./
 COPY server/ ./server/
 COPY src/ ./src/
-COPY openenv.yaml README.md ./
+
+# Install dependencies (including the local package)
+RUN uv sync --frozen --no-dev
+
+# Copy any remaining files
+COPY openenv.yaml ./
 
 # Expose port (required by HF Spaces)
 EXPOSE 7860
