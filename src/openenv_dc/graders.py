@@ -113,13 +113,11 @@ def grade(task_def: dict,
     clamped_score = 0.1 + (raw_score * 0.8)
 
     breakdown = {
-        "check_total": total_checks,
-        "check_correct": correct_checks,
-        "deletion_accuracy_clamped": 0.1 + (0.8 * (
+        "deletion_accuracy_clamped": round(0.1 + (0.8 * (
             delete_correct / max(delete_checks, 1)
             if delete_checks else 1.0
-        )),
-        "cell_accuracy_clamped": 0.1 + (0.8 * raw_score),
+        )), 4),
+        "cell_accuracy_clamped": round(0.1 + (0.8 * raw_score), 4),
     }
 
     return {
