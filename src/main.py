@@ -49,13 +49,14 @@ env = DataCleaningEnv()
 def health():
     """
     Health check endpoint.
-    The validator pings this — must return 200.
+    Redirects to /docs for easier interaction.
     """
     return {
         "status": "ok",
         "environment": "data-cleaning-env",
         "version": "1.0.0",
-        "tasks": list_tasks()
+        "tasks": list_tasks(),
+        "docs": "/docs"
     }
 
 
@@ -63,6 +64,18 @@ def health():
 def get_tasks():
     """List all available tasks."""
     return {"tasks": list_tasks()}
+
+
+@app.get("/reset", include_in_schema=False)
+@app.get("/reset/", include_in_schema=False)
+def reset_get():
+    """Catch-all for GET requests to /reset to help debugging."""
+    raise HTTPException(
+        status_code=405, 
+        detail="Method Not Allowed. Use POST instead of GET for /reset. "
+               "If you are seeing this in a browser, that is expected as browsers use GET. "
+               "If you are seeing this from a script, check for redirects or incorrect URL construction."
+    )
 
 
 @app.post("/reset", response_model=StepResult)
@@ -78,6 +91,16 @@ def reset(req: ResetRequest = ResetRequest()):
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/step", include_in_schema=False)
+@app.get("/step/", include_in_schema=False)
+def step_get():
+    """Catch-all for GET requests to /step to help debugging."""
+    raise HTTPException(
+        status_code=405, 
+        detail="Method Not Allowed. Use POST instead of GET for /step."
+    )
 
 
 @app.post("/step", response_model=StepResult)
